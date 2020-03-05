@@ -1,6 +1,5 @@
 package com.customerProfile.main.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,65 +18,40 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.customerProfile.main.beans.Customer;
 import com.customerProfile.main.exception.ResourceNotFoundException;
-import com.customerProfile.main.repository.CustomerRepository;
-
+import com.customerProfile.main.services.CustomerService;
 
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping("/customers")
 public class CustomerController {
-	
+
 	@Autowired
-	private CustomerRepository customerRepository;
-	
-	@GetMapping("/showall")
-	public List<Customer> getAllCustomers() {
-		return customerRepository.findAll();
+	private CustomerService customerService;
+
+	@GetMapping("/")
+	public List<Customer> readAllCustomers() {
+		return customerService.readAllCustomer();
 	}
 
-	
-	@GetMapping("/read/{customerId}")
-	public ResponseEntity<Customer> getCustomerById(@PathVariable(value = "customerId") long customerId)
+	@GetMapping("/{customerId}")
+	public ResponseEntity<Customer> readCustomer(@PathVariable(value = "customerId") long customerId)
 			throws ResourceNotFoundException {
-		Customer customer = customerRepository.findById(customerId)	.orElseThrow(() -> new ResourceNotFoundException("Customer not found on : " + customerId));
-		return ResponseEntity.ok().body(customer);
-	}
-	
-	@PostMapping("/add")
-	public Customer createCustomer(@Valid @RequestBody Customer customer) {
-		return customerRepository.save(customer);
+		return customerService.readCustomer(customerId);
 	}
 
-	@PutMapping("/edit/{customerId}")
-	public ResponseEntity<Customer> updateCustomer(@PathVariable(value = "customerId") long customerId,
+	@PostMapping("/")
+	public Object addCustomer(@Valid @RequestBody Customer customer) {
+		return customerService.addCustomer(customer);
+	}
+
+	@PutMapping("/{customerId}")
+	public ResponseEntity<Customer> editCustomer(@PathVariable(value = "customerId") long customerId,
 			@Valid @RequestBody Customer customerDetails) throws ResourceNotFoundException {
-		Customer c = customerRepository.findById(customerId)
-				.orElseThrow(() -> new ResourceNotFoundException("Customer not found on : " + customerId));
-		c.setFirstName(customerDetails.getFirstName());
-		c.setLastName(customerDetails.getLastName());
-		c.setGender(customerDetails.getGender());
-		c.setDob(customerDetails.getDob());
-		c.setHouseNo(customerDetails.getHouseNo());
-		c.setStreetName(customerDetails.getStreetName());
-		c.setArea(customerDetails.getArea());
-		c.setCity(customerDetails.getCity());
-		c.setPincode(customerDetails.getPincode());
-		c.setUpdatedAt(customerDetails.getUpdatedAt());
-		
-
-
-		final Customer updatedCustomer = customerRepository.save(c);
-		return ResponseEntity.ok(updatedCustomer);
+		return customerService.editCustomer(customerDetails, customerId);
 	}
-	
-	@DeleteMapping("/delete/{customerId}")
+
+	@DeleteMapping("/{customerId}")
 	public Map<String, Boolean> deleteCustomer(@PathVariable(value = "customerId") long customerId) throws Exception {
-		Customer customer = customerRepository.findById(customerId)
-				.orElseThrow(() -> new ResourceNotFoundException(" customer not found  on : " + customerId));
-		customerRepository.delete(customer);
-		Map<String, Boolean> response = new HashMap<>();
-		response.put("deleted", Boolean.TRUE);
-		return response;
+		return customerService.deleteCustomer(customerId);
 	}
 
-	
 }

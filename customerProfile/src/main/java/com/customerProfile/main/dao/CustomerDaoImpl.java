@@ -1,50 +1,78 @@
 package com.customerProfile.main.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.customerProfile.main.beans.Customer;
+import com.customerProfile.main.exception.ResourceNotFoundException;
+import com.customerProfile.main.repository.CustomerRepository;
 
-@Component
+
 @Qualifier("customerDao")
 public class CustomerDaoImpl implements CustomerDao {
 	@Autowired
-	JdbcTemplate jdbcTemplate;
+	private CustomerRepository customerRepository;
 
-	public void addCustomer(Customer customer) {
-		jdbcTemplate.update(
-				"INSERT INTO tbl_customers (customerId, first_name, last_name, gender,dob,door_no,block_no,house_no,street_name,area,city,pincode,created_at,updated_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-				customer.getCustomerId(), customer.getFirstName(), customer.getLastName(), customer.getGender(),
-				customer.getDob(), customer.getStreetName(),customer.getArea(),customer.getCity(),customer.getPincode(),customer.getCreatedAt(),customer.getUpdatedAt());
-		System.out.println("Customer Added!!");
-		System.out.println(customer);
+	public Customer addCustomer(@Valid @RequestBody Customer customer) {
+		return customerRepository.save(customer);
 	}
 
 	@Override
-	public void editCustomer(Customer customer, long customerId) {
-		// TODO Auto-generated method stub
-		
+	public ResponseEntity<Customer> editCustomer(@PathVariable(value = "customerId") long customerId,
+			@Valid @RequestBody Customer customerDetails) throws ResourceNotFoundException {
+		Customer c = customerRepository.findById(customerId)
+				.orElseThrow(() -> new ResourceNotFoundException("Customer not found on : " + customerId));
+		c.setEmail(customerDetails.getEmail());
+		c.setPhoneNo1(customerDetails.getPhoneNo1());
+		c.setPhoneNo2(customerDetails.getPhoneNo2());
+		c.setFirstName(customerDetails.getFirstName());
+		c.setLastName(customerDetails.getLastName());
+		c.setGender(customerDetails.getGender());
+		c.setDateOfBirth(customerDetails.getDateOfBirth());
+		c.setHouseNo(customerDetails.getHouseNo());
+		c.setStreetAddress(customerDetails.getStreetAddress());
+		c.setLandmark(customerDetails.getLandmark());
+		c.setArea(customerDetails.getArea());
+		c.setCity(customerDetails.getCity());
+		c.setState(customerDetails.getState());
+		c.setPincode(customerDetails.getPincode());
+		c.setUpdatedAt(customerDetails.getUpdatedAt());
+
+		final Customer updatedCustomer = customerRepository.save(c);
+		return ResponseEntity.ok(updatedCustomer);
+
 	}
 
 	@Override
-	public void deleteCustomer(long customerId) {
-		// TODO Auto-generated method stub
-		
+	public Map<String, Boolean> deleteCustomer(@PathVariable(value = "customerId") long customerId) throws Exception {
+		Customer customer = customerRepository.findById(customerId)
+				.orElseThrow(() -> new ResourceNotFoundException(" customer not found  on : " + customerId));
+		customerRepository.delete(customer);
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("deleted", Boolean.TRUE);
+		return response;
 	}
 
 	@Override
-	public Customer readCustomer(long customerId) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseEntity<Customer> readCustomer(@PathVariable(value = "customerId") long customerId)
+			throws ResourceNotFoundException {
+		Customer customer = customerRepository.findById(customerId)
+				.orElseThrow(() -> new ResourceNotFoundException("Customer not found on : " + customerId));
+		return ResponseEntity.ok().body(customer);
 	}
 
 	@Override
 	public List<Customer> readAllCustomer() {
-		// TODO Auto-generated method stub
-		return null;
+		return customerRepository.findAll();
 	}
 }

@@ -24,6 +24,15 @@ public class Customer {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long customerId;
 
+	@Column(name = "email", nullable = false)
+	private String email;
+
+	@Column(name = "Phone_no1", nullable = false)
+	private long phoneNo1;
+
+	@Column(name = "Phone_no2", nullable = false)
+	private long phoneNo2;
+
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
 
@@ -33,20 +42,29 @@ public class Customer {
 	@Column(name = "gender", nullable = false)
 	private String gender;
 
-	@Column(name = "dob", nullable = false)
-	private Date dob;
+	@Column(name = "date_of_birth", nullable = false)
+	private Date dateOfBirth;
+
+	@Column(name = "door_no", nullable = false)
+	private String doorNo;
 
 	@Column(name = "house_no", nullable = false)
 	private String houseNo;
 
-	@Column(name = "street_name", nullable = false)
-	private String streetName;
+	@Column(name = "street_address", nullable = false)
+	private String streetAddress;
+
+	@Column(name = "landmark", nullable = false)
+	private String landmark;
 
 	@Column(name = "area", nullable = false)
 	private String area;
 
 	@Column(name = "city", nullable = false)
 	private String city;
+
+	@Column(name = "state", nullable = false)
+	private String state;
 
 	@Column(name = "pincode", nullable = false)
 	private int pincode;
@@ -65,18 +83,25 @@ public class Customer {
 		super();
 	}
 
-	public Customer(long customerId, String firstName, String lastName, String gender, Date dob, String houseNo,
-			String streetName, String area, String city, int pincode, Date createdAt, Date updatedAt) {
+	public Customer(long customerId, String email, long phoneNo1, long phoneNo2, String firstName, String lastName,
+			String gender, Date dateOfBirth, String doorNo, String houseNo, String streetAddress, String landmark,
+			String area, String city, String state, int pincode, Date createdAt, Date updatedAt) {
 		super();
 		this.customerId = customerId;
+		this.email = email;
+		this.phoneNo1 = phoneNo1;
+		this.phoneNo2 = phoneNo2;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.gender = gender;
-		this.dob = dob;
+		this.dateOfBirth = dateOfBirth;
+		this.doorNo = doorNo;
 		this.houseNo = houseNo;
-		this.streetName = streetName;
+		this.streetAddress = streetAddress;
+		this.landmark = landmark;
 		this.area = area;
 		this.city = city;
+		this.state = state;
 		this.pincode = pincode;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
@@ -88,6 +113,30 @@ public class Customer {
 
 	public void setCustomerId(long customerId) {
 		this.customerId = customerId;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public long getPhoneNo1() {
+		return phoneNo1;
+	}
+
+	public void setPhoneNo1(long phoneNo1) {
+		this.phoneNo1 = phoneNo1;
+	}
+
+	public long getPhoneNo2() {
+		return phoneNo2;
+	}
+
+	public void setPhoneNo2(long phoneNo2) {
+		this.phoneNo2 = phoneNo2;
 	}
 
 	public String getFirstName() {
@@ -114,12 +163,20 @@ public class Customer {
 		this.gender = gender;
 	}
 
-	public Date getDob() {
-		return dob;
+	public Date getDateOfBirth() {
+		return dateOfBirth;
 	}
 
-	public void setDob(Date dob) {
-		this.dob = dob;
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth=dateOfBirth;
+	}
+
+	public String getDoorNo() {
+		return doorNo;
+	}
+
+	public void setDoorNo(String doorNo) {
+		this.doorNo = doorNo;
 	}
 
 	public String getHouseNo() {
@@ -130,12 +187,20 @@ public class Customer {
 		this.houseNo = houseNo;
 	}
 
-	public String getStreetName() {
-		return streetName;
+	public String getStreetAddress() {
+		return streetAddress;
 	}
 
-	public void setStreetName(String streetName) {
-		this.streetName = streetName;
+	public void setStreetAddress(String streetAddress) {
+		this.streetAddress = streetAddress;
+	}
+
+	public String getLandmark() {
+		return landmark;
+	}
+
+	public void setLandmark(String landmark) {
+		this.landmark = landmark;
 	}
 
 	public String getArea() {
@@ -152,6 +217,14 @@ public class Customer {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 
 	public int getPincode() {
@@ -180,11 +253,17 @@ public class Customer {
 
 	@Override
 	public String toString() {
-		return "Customer [Customer Id=" + getCustomerId() + ", Cutomer First Name=" + getFirstName()
-				+ ", Customer Last Name=" + getLastName() + ", Gender=" + getGender() + ", Date Of Birth=" + getDob()
-				+ ",  House No=" + getHouseNo() + ", Street Name=" + getStreetName() + ", Area=" + getArea() + ", City="
-				+ getCity() + ", Pincode=" + getPincode() + ", Created At=" + getCreatedAt() + ", Updated At="
-				+ getUpdatedAt() + "]";
+		return "Customer [Customer Id=" + customerId + ", Email=" + email + ", Phone No=" + phoneNo1
+				+ ", PhoneNo (optional)=" + phoneNo2 + ", First Name=" + firstName + ", Last Name=" + lastName
+				+ ", Gender=" + gender + ", Date of Birth=" + dateOfBirth + ", Door No=" + doorNo + ", House No="
+				+ houseNo + ", Street Address=" + streetAddress + ", Landmark=" + landmark + ", Area=" + area
+				+ ", City=" + city + ", State=" + state + ", Pincode=" + pincode + ", Created At=" + createdAt
+				+ ", Updated At=" + updatedAt + "]";
+	}
+
+	public Customer orElseThrow(Object object) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

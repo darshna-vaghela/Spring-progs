@@ -1,12 +1,15 @@
 package com.customerProfile.main.services;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.customerProfile.main.beans.Customer;
 import com.customerProfile.main.dao.CustomerDao;
+import com.customerProfile.main.exception.ResourceNotFoundException;
 
 @Service("customerService")
 public class CustomerServiceImpl implements CustomerService {
@@ -14,19 +17,19 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	CustomerDao customerDao;
 
-	public void addCustomer(Customer customer) {
-		customerDao.addCustomer(customer);
+	public Customer addCustomer(Customer customer) {
+		return customerDao.addCustomer(customer);
 	}
 
-	public void editCustomer(Customer customer, long customerId) {
-		customerDao.editCustomer(customer, customerId);
+	public ResponseEntity<Customer> editCustomer(Customer customer, long customerId) throws ResourceNotFoundException {
+		return customerDao.editCustomer(customerId, customer);
 	}
 
-	public void deleteCustomer(long customerId) {
-		customerDao.deleteCustomer(customerId);
+	public Map<String, Boolean> deleteCustomer(long customerId) throws Exception {
+		return customerDao.deleteCustomer(customerId);
 	}
 
-	public Customer readCustomer(long customerId) {
+	public ResponseEntity<Customer> readCustomer(long customerId) throws ResourceNotFoundException {
 		return customerDao.readCustomer(customerId);
 	}
 
@@ -34,5 +37,4 @@ public class CustomerServiceImpl implements CustomerService {
 		return customerDao.readAllCustomer();
 	}
 
-	
 }
